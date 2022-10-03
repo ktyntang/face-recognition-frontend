@@ -76,7 +76,7 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input});
-    fetch('http://localhost:3001/image', {
+    fetch('https://quiet-forest-85839.herokuapp.com/image', {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({input: this.state.input})
@@ -84,7 +84,7 @@ class App extends Component {
           .then(res=>res.json())
           .then(response => {
             if (response) {
-              fetch('http://localhost:3001/image', {
+              fetch('https://quiet-forest-85839.herokuapp.com/image', {
                 method: 'put',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({id: this.state.user.id})
@@ -132,16 +132,16 @@ class App extends Component {
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         { route === 'home'
           ? <div>
-              <Logo />
               <Rank
                 name={this.state.user.name}
                 entries={this.state.user.entries}
               />
-              <ImageLinkForm
+              <ImageLinkForm    
                 onInputChange={this.onInputChange}
                 onButtonSubmit={this.onButtonSubmit}
               />
               <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
+              <footer className ='pa1 white'>powered by <a href = 'https://clarifai.com/clarifai/main/models/face-detection'>clarifai</a></footer>
             </div>
           : <LoginForm loadUser={this.loadUser} onRouteChange={this.onRouteChange} route ={this.state.route}/>
         }
