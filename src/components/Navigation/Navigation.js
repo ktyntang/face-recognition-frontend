@@ -2,7 +2,6 @@ import React from 'react';
 import Logo from '../Logo/Logo';
 
 const Navigation = ({ onRouteChange, isSignedIn }) => {
-    
     if (isSignedIn) {
       return (
         <nav className='flex justify-end'>

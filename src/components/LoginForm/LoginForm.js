@@ -1,72 +1,43 @@
-import React from 'react';
+import {useState} from 'react';
 
-class LoginForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      password: '',
-      name: ''
+const LoginForm = (props) => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+
+  const onNameChange = (event) => setName(event.target.value)
+  const onEmailChange = (event) => setEmail(event.target.value)
+  const onPasswordChange = (event) => setPassword(event.target.value)
+  
+  const onSubmit = () => {
+    let endpoint = 'https://quiet-forest-85839.herokuapp.com/'+ props.route
+    fetch(endpoint, {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        name: name
+      })
+    })
+    .then(response => response.json())
+    .then(user => {
+        if (user.id) {
+          props.loadUser(user)
+          console.log('changed loaduser, changing route to home')
+          props.onRouteChange('home')
+          console.log('changed route to home');
+        }
+      })
+  }
+
+  const handleKeyPress = (event) => {
+    if (event.code === 'Enter'){
+      onSubmit(props.route)
     }
-  }
+    };
 
-  onNameChange = (event) => {
-    this.setState({name: event.target.value})
-  }
-
-  onEmailChange = (event) => {
-    this.setState({email: event.target.value})
-  }
-
-  onPasswordChange = (event) => {
-    this.setState({password: event.target.value})
-  }
-
-
-  onSubmitRegister = () => {
-    fetch('https://quiet-forest-85839.herokuapp.com/register', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-        name: this.state.name
-      })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
-  }
-
-  onSubmitSignIn = () => {
-    fetch('https://quiet-forest-85839.herokuapp.com/signin', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password
-      })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
-  }
-
-  handleKeyPress = (event) => {
-    if (event.code === 'Enter') {
-      (this.props.route==='signin'||this.props.route==='signout')? this.onSubmitSignIn() : this.onSubmitRegister()
-    }};
-
-  render() {
-    return this.props.route === 'signin' || this.props.route === 'signout'?
+    return props.route === 'signin'?
     (<article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center bg-white-40">
         <main className="pa4 black-80">
           <div className="measure">
@@ -79,7 +50,7 @@ class LoginForm extends React.Component {
                   type="email"
                   name="email-address"
                   id="email-address"
-                  onChange={this.onEmailChange}
+                  onChange={onEmailChange}
                 />
               </div>
               <div className="mv3">
@@ -89,21 +60,21 @@ class LoginForm extends React.Component {
                   type="password"
                   name="password"
                   id="password"
-                  onChange={this.onPasswordChange}
-                  onKeyPress={this.handleKeyPress}
+                  onChange={onPasswordChange}
+                  onKeyPress={handleKeyPress}
                 />
               </div>
             </fieldset>
             <div className="">
               <input
-                onClick={this.onSubmitSignIn}
+                onClick={onSubmit}
                 className="b ph3 pv2 input-reset ba b--light-purple bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Sign in"
               />
             </div>
             <div className="lh-copy mt3">
-              <p  onClick={() => this.props.onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
+              <p  onClick={() => props.onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
             </div>
           </div>
         </main>
@@ -120,7 +91,7 @@ class LoginForm extends React.Component {
                   type="text"
                   name="name"
                   id="name"
-                  onChange={this.onNameChange}
+                  onChange={onNameChange}
                 />
               </div>
               <div className="mt3">
@@ -130,7 +101,7 @@ class LoginForm extends React.Component {
                   type="email"
                   name="email-address"
                   id="email-address"
-                  onChange={this.onEmailChange}
+                  onChange={onEmailChange}
                 />
               </div>
               <div className="mv3">
@@ -140,14 +111,14 @@ class LoginForm extends React.Component {
                   type="password"
                   name="password"
                   id="password"
-                  onChange={this.onPasswordChange}
-                  onKeyPress={this.handleKeyPress}
+                  onChange={onPasswordChange}
+                  onKeyPress={handleKeyPress}
                 />
               </div>
             </fieldset>
             <div className="">
               <input
-                onClick={this.onSubmitRegister}
+                onClick={onSubmit}
                 className="b ph3 pv2 input-reset ba b--light-purple bg-transparent grow pointer f6 dib"
                 type="submit"
                 value="Register"
@@ -157,7 +128,6 @@ class LoginForm extends React.Component {
         </main>
       </article>
     )
-  }
 }
 
 export default LoginForm;
